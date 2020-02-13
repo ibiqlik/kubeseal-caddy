@@ -23,6 +23,7 @@ spec:
           volumeMounts:
             - name: www
               mountPath: /www
+              readOnly: true
             - name: config
               mountPath: /etc/caddy
           livenessProbe:
@@ -31,7 +32,8 @@ spec:
               port: http
       volumes:
         - name: www
-          emptyDir: {}
+          persistentVolumeClaim:
+              claimName: kubeseal-certs
         - name: "config"
           configMap:
             name: "caddy-configmap"

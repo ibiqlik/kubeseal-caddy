@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubeseal-caddy
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+  - hosts:
+    - kubeseal.example.com
+    secretName: kubeseal-caddy-tls
+  rules:
+  - host: kubeseal.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubeseal-caddy
+          servicePort: 80

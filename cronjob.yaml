@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubeseal-cert-job
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: ilirbekteshi/kubeseal
+            command: ["/bin/sh"]
+            args:
+              - -c
+              - /usr/local/bin/kubeseal --version > /www/version.txt
+              # --fetch-cert >/www/cert.pem
+            volumeMounts:
+              - name: www
+                mountPath: /www
+          restartPolicy: OnFailure
+          volumes:
+          - name: www
+            persistentVolumeClaim:
+                claimName: kubeseal-certs
