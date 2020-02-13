@@ -20,6 +20,8 @@ Create following files in your project
 
 Create a copy of `ingress.yaml` in your project and modify to your liking
 
+⚠ **Even though only the public cert is made available, which is not a secret information, you should probably not expose this to the world but somewhere you trust**
+
 
 `kustomization.yaml`
 ```yaml
@@ -52,7 +54,7 @@ patchesStrategicMerge:
 kubectl apply -k .
 ```
 
-If you with to deploy to a specific namespace
+If you wish to deploy to a specific namespace
 
 ```
 kubectl create namespace [mynamespace]
@@ -67,3 +69,23 @@ Now this can be run from anywhere without the need to be authenticated to a k8s 
 ```
 kubeseal --cert https://kubeseal.example.com/cert.pem -o yaml <mySecret.yaml >mySealedSecret.yaml
 ```
+
+## [kubeseal docker image](kubeseal/Dockerfile)
+
+This docker image is used for convinience but in case you don't want to use my (3rd) party image you can change `cronjob` and `deployment/initContainer` to use `alpine` or `busybox`, download `kubeseal` and run it from there.
+
+Something like this (not tested):
+
+```
+containers:
+- name: kubeseal-fetch-cert
+  image: busybox
+  command: ["/bin/sh"]
+  args:
+    - -c
+    - wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.9.7/kubeseal-linux-amd64 -O /usr/local/bin/kubeseal &&
+    - chmod +x /usr/local/bin/kubeseal
+    - /usr/local/bin/kubeseal --fetch-cert > /www/cert.pem
+```
+
+Or build and push your image

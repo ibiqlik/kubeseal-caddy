@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - kubeseal.example.com
+    - kubeseal.intranet.company.com
     secretName: kubeseal-caddy-tls
   rules:
-  - host: kubeseal.example.com
+  - host: kubeseal.intranet.company.com
     http:
       paths:
       - path: /
