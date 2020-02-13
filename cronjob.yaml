@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: kubeseal-cert-job
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "* */1 * * *"
   jobTemplate:
     spec:
       template:
@@ -14,8 +14,7 @@ spec:
             command: ["/bin/sh"]
             args:
               - -c
-              - /usr/local/bin/kubeseal --version > /www/version.txt
-              # --fetch-cert >/www/cert.pem
+              - /usr/local/bin/kubeseal --fetch-cert > /www/cert.pem
             volumeMounts:
               - name: www
                 mountPath: /www
