@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-configmap
+data:
+  Caddyfile: |
+    :80
+    file_server {
+      root /www
+      browse
+    }
+

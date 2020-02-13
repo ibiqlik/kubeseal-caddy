@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubeseal-caddy
+  labels:
+    app: kubeseal-caddy
+spec:
+  selector:
+    app: kubeseal-caddy
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    targetPort: http
+    port: 80
+    nodePort: 30080

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeseal-caddy
+  labels:
+    app: kubeseal-caddy
+spec:
+  selector:
+    matchLabels:
+      app: kubeseal-caddy
+  template:
+    metadata:
+      labels:
+        app: kubeseal-caddy
+    spec:
+      containers:
+        - name: caddy
+          image: caddy/caddy:alpine
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: www
+              mountPath: /www
+            - name: config
+              mountPath: /etc/caddy
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+      volumes:
+        - name: www
+          emptyDir: {}
+        - name: "config"
+          configMap:
+            name: "caddy-configmap"
