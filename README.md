@@ -52,6 +52,13 @@ patchesStrategicMerge:
 kubectl apply -k .
 ```
 
+If you with to deploy to a specific namespace
+
+```
+kubectl create namespace [mynamespace]
+kubectl apply -n [mynamespace] -k .
+```
+
 
 # Sealing secrets
 
