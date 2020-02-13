@@ -6,14 +6,56 @@ Since 0.9.x the certs are automatically renews and the goal with this kustomize 
 
 # Deploy
 
-- Clone this repo
-- Cert will be exported every hour, change schedule in `cronjob.yaml` to your liking
-- Modify `ingress.yaml` with your hostnames or put your ingress spec
-- `kubectl apply -k .`
+## Kustomize
 
-# Seal secrets
+Kustomizing your deployment
 
-This can be run from anywhere as long as you can access the ingress endpoint
+Create following files in your project
+
+```
+.
+├── ingress.yaml
+└── kustomization.yaml
+```
+
+Create a copy of `ingress.yaml` in your project and modify to your liking
+
+
+`kustomization.yaml`
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- https://github.com/ibiqlik/kubeseal-caddy
+
+patchesStrategicMerge:
+  - ingress.yaml
+
+# patchesJson6902:
+#   - target:
+#       version: v1beta1
+#       group: batch
+#       kind: CronJob
+#       name: kubeseal-cert-job
+#     patch: |-
+#       - op: replace
+#         path: /spec/schedule
+#         value: "* * * * *"
+```
+
+`patchesJson6902` is optional if for example you want to change how often it should run
+
+## Deploy
+
+```
+kubectl apply -k .
+```
+
+
+# Sealing secrets
+
+Now this can be run from anywhere without the need to be authenticated to a k8s cluster, as long as you can access the ingress endpoint
 
 ```
 kubeseal --cert https://kubeseal.example.com/cert.pem -o yaml <mySecret.yaml >mySealedSecret.yaml
